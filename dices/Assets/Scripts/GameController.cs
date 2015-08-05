@@ -23,6 +23,9 @@ public class GameController : MonoBehaviour {
 	public UnityEngine.UI.Text prehral;
 	public UnityEngine.UI.Text zaver;
 
+	public UnityEngine.UI.Slider leftSlider;
+	public UnityEngine.UI.Slider rightSlider;
+
 	enum State 
 	{
 		beforeGame,
@@ -95,12 +98,15 @@ public class GameController : MonoBehaviour {
 				rightDice.GetComponent<DiceBehaviour>().StartRolling();
 				leftDice.GetComponent<DiceBehaviour>().StartRolling();
 
-				rightDice.GetComponent<DiceBehaviour>().SetOriginalSpeed();
-				leftDice.GetComponent<DiceBehaviour>().SetOriginalSpeed();
+//				rightDice.GetComponent<DiceBehaviour>().SetOriginalSpeed();
+//				leftDice.GetComponent<DiceBehaviour>().SetOriginalSpeed();
+
+				leftDice.GetComponent<DiceBehaviour>().SetSpeed(leftSlider.value);
+				rightDice.GetComponent<DiceBehaviour>().SetSpeed(rightSlider.value);
 				gameState = State.game;
 
-				rightDice.WriteSpeed();
-				leftDice.WriteSpeed();
+//				rightDice.WriteSpeed();
+//				leftDice.WriteSpeed();
 
 				vyhral.gameObject.SetActive(false);
 				prehral.gameObject.SetActive(false);
@@ -147,12 +153,21 @@ public class GameController : MonoBehaviour {
 				updatePoints(points);
 				updateTries(tries);
 
-				rightDice.GetComponent<DiceBehaviour>().DefineOriginalSpeed();
-				leftDice.GetComponent<DiceBehaviour>().DefineOriginalSpeed();
-				
+//				rightDice.GetComponent<DiceBehaviour>().DefineOriginalSpeed();
+//				leftDice.GetComponent<DiceBehaviour>().DefineOriginalSpeed();
+
+				leftDice.GetComponent<DiceBehaviour>().SetSpeed(leftSlider.value);
+				rightDice.GetComponent<DiceBehaviour>().SetSpeed(rightSlider.value);
+//				
 				leftDice.GetComponent<DiceBehaviour>().StartRolling();
 				rightDice.GetComponent<DiceBehaviour>().StartRolling();
 			}
 		}
 	}
+
+	public void Quit(){
+		Debug.Log ("quit");
+		Application.Quit ();
+	}
+
 }

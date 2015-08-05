@@ -19,8 +19,8 @@ public class DiceBehaviour : MonoBehaviour {
 	private bool rolling;
 	private bool stopping;
 
-	private int originalSpeed;
-	private bool origialSpeedBool;
+//	private int originalSpeed;
+//	private bool origialSpeedBool;
 
 	private int changedSpeed;
 	private bool changedSpeedBool;
@@ -68,10 +68,10 @@ public class DiceBehaviour : MonoBehaviour {
 			counter++;
 			incrementSpeedCounter++;
 
-			if(origialSpeedBool){
-				originalSpeed = Speed;
-				origialSpeedBool = false;
-			}
+//			if(origialSpeedBool){
+//				originalSpeed = Speed;
+//				origialSpeedBool = false;
+//			}
 			if (counter >= Speed) {
 				if(changedSpeedBool){
 					changedSpeedBool = false;
@@ -322,15 +322,15 @@ public class DiceBehaviour : MonoBehaviour {
 		changedSpeedBool = true;
 	}
 
-	public void SetOriginalSpeed(){
-		Speed = originalSpeed;
-		arr = NonUniformDistributionsGaussian (0, Speed);
-	}
+//	public void SetOriginalSpeed(){
+//		Speed = originalSpeed;
+//		arr = NonUniformDistributionsGaussian (0, Speed);
+//	}
 
-	public void DefineOriginalSpeed(){
-		//Debug.Log (Speed);
-		originalSpeed = Speed;
-	}
+//	public void DefineOriginalSpeed(){
+//		//Debug.Log (Speed);
+//		originalSpeed = Speed;
+//	}
 
 	public void WriteSpeed(){
 		Debug.Log (Speed);
