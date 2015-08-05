@@ -3,15 +3,27 @@ using System.Collections;
 
 public class DiceBehaviour : MonoBehaviour {
 
-	public int TimeStop;
+	public UnityEngine.UI.Slider slider;
+
+	public int Speed;
 	private int counter;
+	private int incrementSpeedCounter;
 	
 	private Direction direction;
 	private Vector3 directionVector;
 
 	private float[] arr;
 
-	private float startTime;
+	private State state;
+
+	private bool rolling;
+	private bool stopping;
+
+	private int originalSpeed;
+	private bool origialSpeedBool;
+
+	private int changedSpeed;
+	private bool changedSpeedBool;
 
 	enum Direction
 	{
@@ -22,35 +34,142 @@ public class DiceBehaviour : MonoBehaviour {
 		clockwise,
 		anticlockwise
 	}
+
+	enum State
+	{
+		rolling,
+		stopping, 
+		paused,
+	}
 	// Use this for initialization
 	void Start () {
 		counter = 0;
+		incrementSpeedCounter = 0;
 		direction = getRandomDirection();
-		startTime = Time.time;
-		arr = new float[TimeStop];
-		arr = NonUniformDistributionsGaussian (0, TimeStop); //musi byt neparne cislo!
+		arr = new float[Speed];
+		arr = NonUniformDistributionsGaussian (0, Speed); //musi byt neparne cislo!
+
+		rolling = false;
+
+		state = State.paused;
+
+		//originalSpeed = 0;
+		//origialSpeedBool = true;
+
+		Debug.Log (Speed);
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		counter++;
-//		if (counter > TimeStep) {
-//			Direction direction = getRandomDirection();
-//			Vector3 newPosition = rotationVector(direction);
-//			counter = 0;
-//		}
+		switch (state) {
 
-		if (counter >= TimeStop) {
-			counter = 0;
-			direction = getRandomDirection();
-			directionVector = rotationVector(direction);
-			startTime = Time.time;
-		} else {
-			//Debug.Log(counter);
-			//float distCovered = (Time.time - startTime) * TimeStop;
-			//transform.rotation = Quaternion.Lerp (startMarker, endMarker, distCovered);
-			this.transform.RotateAround(transform.position, directionVector, arr[counter-1]*90);
+		case State.rolling :
+
+			counter++;
+			incrementSpeedCounter++;
+
+			if(origialSpeedBool){
+				originalSpeed = Speed;
+				origialSpeedBool = false;
+			}
+			if (counter >= Speed) {
+				if(changedSpeedBool){
+					changedSpeedBool = false;
+					Speed = changedSpeed;
+					arr = NonUniformDistributionsGaussian (0, Speed);
+				}
+				counter = 0;
+				direction = getRandomDirection ();
+				directionVector = rotationVector (direction);
+				if(incrementSpeedCounter > 120 && Speed > 20){
+					incrementSpeedCounter = 0;
+					Speed = Speed - 2;
+					arr = NonUniformDistributionsGaussian(0, Speed);
+				}
+			} else {
+				//Debug.Log(counter);
+				//float distCovered = (Time.time - startTime) * TimeStop;
+				//transform.rotation = Quaternion.Lerp (startMarker, endMarker, distCovered);
+				this.transform.RotateAround (transform.position, directionVector, arr [counter-1] * 90);
+			}
+
+			break;
+
+		case State.paused:
+
+			break;
+
+		case State.stopping:
+
+			if(stopping){
+				counter--;
+				if(counter < 1){
+					rolling = false;
+				}
+			} else {
+				counter++;
+				incrementSpeedCounter++;
+			}
+
+			if(counter >= Speed || counter < 1){
+
+				counter = 0;
+				state = State.paused;
+				direction = getRandomDirection ();
+				directionVector = rotationVector (direction);
+				if(incrementSpeedCounter > 120 && Speed > 20){
+					incrementSpeedCounter = 0;
+					Speed = Speed - 2;
+					arr = NonUniformDistributionsGaussian(0, Speed);
+				}
+			} else {
+				if(stopping){
+					this.transform.RotateAround (transform.position, directionVector, arr [counter] * -90);
+				} else {
+					this.transform.RotateAround (transform.position, directionVector, arr [counter - 1] * 90);
+				}
+			}
+
+			break;
 		}
+
+//		if (state == State.rolling) {
+//			//Debug.Log(Speed);
+//
+//
+//
+//
+////		if (counter > TimeStep) {
+////			Direction direction = getRandomDirection();
+////			Vector3 newPosition = rotationVector(direction);
+////			counter = 0;
+////		}
+//
+//			if (counter >= Speed) {
+//				if(changedSpeedBool){
+//					changedSpeedBool = false;
+//					Speed = changedSpeed;
+//					arr = NonUniformDistributionsGaussian (0, Speed);
+//				}
+//				counter = 0;
+//				direction = getRandomDirection ();
+//				directionVector = rotationVector (direction);
+//				if(incrementSpeedCounter > 120 && Speed > 20){
+//					incrementSpeedCounter = 0;
+//					Speed = Speed - 2;
+//					arr = NonUniformDistributionsGaussian(0, Speed);
+//				}
+//			} else {
+//				//Debug.Log(counter);
+//				//float distCovered = (Time.time - startTime) * TimeStop;
+//				//transform.rotation = Quaternion.Lerp (startMarker, endMarker, distCovered);
+//				if(stopping){
+//					this.transform.RotateAround (transform.position, directionVector, arr [counter] * -90);
+//				} else {
+//					this.transform.RotateAround (transform.position, directionVector, arr [counter - 1] * 90);
+//				}
+//			}
+//		}
 	}
 
 	private Vector3 rotationVector(Direction dir){
@@ -179,6 +298,42 @@ public class DiceBehaviour : MonoBehaviour {
 			arr[i] = arr[i]/totalNumber;
 		}
 		return arr;
+	}
+
+	public void StartRolling(){
+		Speed = 60 - 10 * (int)slider.value;
+		state = State.rolling;
+		rolling = true;
+		stopping = false;
+	}
+
+	public void StopRolling(){
+			state = State.stopping;
+//			if (counter <= Speed / 2) {
+//			stopping = true;
+//		} else {
+//				stopping = false;
+//		}
+			stopping = (counter <= Speed / 2) ? true : false;
+	}
+
+	public void SetSpeed(float i){
+		changedSpeed = 60 - 10 * (int)i;
+		changedSpeedBool = true;
+	}
+
+	public void SetOriginalSpeed(){
+		Speed = originalSpeed;
+		arr = NonUniformDistributionsGaussian (0, Speed);
+	}
+
+	public void DefineOriginalSpeed(){
+		//Debug.Log (Speed);
+		originalSpeed = Speed;
+	}
+
+	public void WriteSpeed(){
+		Debug.Log (Speed);
 	}
 
 //	private Vector3 getVectorFromDirection(Direction dir){
