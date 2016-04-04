@@ -53,7 +53,7 @@ public class GameController : MonoBehaviour {
 		//Debug.Log (gameState);
 		if (Input.GetKey (KeyCode.Space)) {
 
-			if(gameState == State.game)
+			if(gameState == State.game && leftDice.GetComponent<DiceBehaviour>().GetNumOfDirectionChanges() > 0 && rightDice.GetComponent<DiceBehaviour>().GetNumOfDirectionChanges() > 0)
 				{
 				rightDice.GetComponent<DiceBehaviour>().StopRolling();
 				//rightDice.GetComponent<DiceBehaviour>().SetOriginalSpeed();
@@ -129,7 +129,7 @@ public class GameController : MonoBehaviour {
 	}
 
 	private void updatePoints(int points){
-		pointsString = "Aktuálny počet bodov: " + points;
+		pointsString = "Aktuálny počet dekátov: " + points;
 		finalNumOfPoints.text = pointsString;
 	}
 
@@ -141,9 +141,13 @@ public class GameController : MonoBehaviour {
 	public void AllAtrAreSet(){
 		if (gameState == State.beforeGame) {
 
-			bool isNumeric = int.TryParse(numOfPoints.text, out points);
-			isNumeric = isNumeric && int.TryParse(numOfTries.text, out tries);
-			if(isNumeric){
+			bool isValid = int.TryParse(numOfPoints.text, out points);
+			isValid = isValid && int.TryParse(numOfTries.text, out tries);
+			if (tries < 1) {
+				isValid = false;
+				tries = 100;
+			}
+			if(isValid && points > 0){
 				//Debug.Log("lalala");
 				gameState = State.game;
 				numOfPoints.gameObject.SetActive(false);

@@ -1,9 +1,8 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/GameController.cs">
+  <MonoDevelop.Ide.Workspace />
+  <MonoDevelop.Ide.Workbench ActiveDocument="../../Meche/Meche/Assets/Scripts/PlayerController.cs">
     <Files>
-      <File FileName="Assets/Scripts/DiceBehaviour.cs" Line="61" Column="18" />
-      <File FileName="Assets/Scripts/GameController.cs" Line="108" Column="3" />
+      <File FileName="../../Meche/Meche/Assets/Scripts/PlayerController.cs" Line="28" Column="17" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

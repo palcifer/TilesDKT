@@ -25,6 +25,8 @@ public class DiceBehaviour : MonoBehaviour {
 	private int changedSpeed;
 	private bool changedSpeedBool;
 
+	private int numOfDirectionChanges;
+
 	enum Direction
 	{
 		up, 
@@ -50,17 +52,17 @@ public class DiceBehaviour : MonoBehaviour {
 		arr = NonUniformDistributionsGaussian (0, Speed); //musi byt neparne cislo!
 
 		rolling = false;
-
+		numOfDirectionChanges = 0;
 		state = State.paused;
 
 		//originalSpeed = 0;
 		//origialSpeedBool = true;
 
-		Debug.Log (Speed);
+		//Debug.Log (Speed);
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void LateUpdate () {
 		switch (state) {
 
 		case State.rolling :
@@ -79,6 +81,7 @@ public class DiceBehaviour : MonoBehaviour {
 					arr = NonUniformDistributionsGaussian (0, Speed);
 				}
 				counter = 0;
+				numOfDirectionChanges++;
 				direction = getRandomDirection ();
 				directionVector = rotationVector (direction);
 				if(incrementSpeedCounter > 120 && Speed > 20){
@@ -101,6 +104,7 @@ public class DiceBehaviour : MonoBehaviour {
 
 		case State.stopping:
 
+			numOfDirectionChanges = 0;
 			if(stopping){
 				counter--;
 				if(counter < 1){
@@ -334,6 +338,10 @@ public class DiceBehaviour : MonoBehaviour {
 
 	public void WriteSpeed(){
 		Debug.Log (Speed);
+	}
+
+	public int GetNumOfDirectionChanges(){
+		return numOfDirectionChanges;
 	}
 
 //	private Vector3 getVectorFromDirection(Direction dir){
